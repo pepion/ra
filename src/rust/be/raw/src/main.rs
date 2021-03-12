@@ -1,9 +1,8 @@
 use actix_files as fs;
 use actix_session::{CookieSession, Session};
-use actix_utils::mpsc;
 use actix_web::http::{header, Method, StatusCode};
 use actix_web::{
-    error, get, guard, middleware, web, App, Error, HttpRequest, HttpResponse,
+    error, get, guard, middleware, web, App, HttpRequest, HttpResponse,
     HttpServer, Result,
 };
 use std::{env, io};
@@ -36,16 +35,6 @@ async fn p404() -> Result<fs::NamedFile> {
     Ok(fs::NamedFile::open("static/404.html")?.set_status_code(StatusCode::NOT_FOUND))
 }
 
-/// response body
-async fn response_body(path: web::Path<String>) -> HttpResponse {
-    let text = format!("Hello {}!", *path);
-
-    let (tx, rx_body) = mpsc::channel();
-    let _ = tx.send(Ok::<_, Error>(web::Bytes::from(text)));
-
-    HttpResponse::Ok().streaming(rx_body)
-}
-
 /// handler with path parameters like `/user/{name}/`
 async fn with_param(
     req: HttpRequest,
@@ -71,14 +60,11 @@ async fn main() -> io::Result<()> {
             .wrap(middleware::Logger::default())
             // register favicon
             .configure(routes::core::services)
+            .configure(routes::stream::services)
             // register simple route, handle all methods
             .service(welcome)
             // with path parameters
             .service(web::resource("/user/{name}").route(web::get().to(with_param)))
-            // async response body
-            .service(
-                web::resource("/async-body/{name}").route(web::get().to(response_body)),
-            )
             .service(
                 web::resource("/test").to(|req: HttpRequest| match *req.method() {
                     Method::GET => HttpResponse::Ok(),
@@ -115,6 +101,7 @@ async fn main() -> io::Result<()> {
             )
     })
     .bind("127.0.0.1:8080")?
+        .workers(4)
     .run()
     .await
 }

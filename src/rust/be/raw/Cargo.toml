@@ -10,3 +10,7 @@ actix-files = "0.3"
 actix-session = "0.4"
 actix-utils = "2"
 env_logger = "0.8"
+actix-rt = "1"
+futures = "0.3.4"
+futures-timer = "3.0.2"
+# tokio = { version = "0.2", features = ["sync"] }
