@@ -1,4 +1,4 @@
 [workspace]
 members = [
-  "be/ra/aw_async_client",
+  "be/raw/aw_async_client",
 ]
