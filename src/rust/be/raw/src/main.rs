@@ -105,7 +105,7 @@ async fn main() -> io::Result<()> {
             )
     })
         .bind("127.0.0.1:8080")?
-        .workers(12)
+        .workers(32)
         .run()
         .await
 }

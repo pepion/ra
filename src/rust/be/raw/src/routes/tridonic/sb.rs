@@ -77,7 +77,7 @@ async fn run_wait(start: Instant, client: web::Data<Client>, element: String) {
 async fn spawn_fn(start: Instant, client: web::Data<Client>, element: String) {
     actix_web::rt::spawn(async move {
         run_wait(start, client.clone(), element).await;
-        //run_wait(start, client.clone(), "drivers".to_string()).await;
+        run_wait(start, client.clone(), "drivers".to_string()).await;
     });
 }
 
@@ -90,9 +90,12 @@ async fn forward2(
 ) -> Result<HttpResponse, Error> {
     let start = Instant::now();
     spawn_fn(start.clone(), client.clone(), "modules".to_string()).await;
-    // TODO: timeout problem 10 modules ok in 84-100 sec
+
+    // TODO: is this timeout on tridonic side?
+    // timeout problem 10 modules ok in 84-100 sec
     // + 6 driver ok + 4 driver Err(Connect(Timeout)) even before 67 sec, when others in 100 sec !!!
-    spawn_fn(start.clone(), client.clone(), "drivers".to_string()).await;
+    // spawn_fn(start.clone(), client.clone(), "drivers".to_string()).await;
+
     Ok(HttpResponse::Ok().body("Started..."))
 }
 
