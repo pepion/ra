@@ -1,11 +1,13 @@
+use std::{env, io};
+
 use actix_files as fs;
 use actix_session::{CookieSession, Session};
-use actix_web::http::{header, Method, StatusCode};
 use actix_web::{
-    error, get, guard, middleware, web, App, HttpRequest, HttpResponse,
-    HttpServer, Result,
+    App, error, get, guard, HttpRequest, HttpResponse, HttpServer, middleware,
+    Result, web,
 };
-use std::{env, io};
+use actix_web::client::Client;
+use actix_web::http::{header, Method, StatusCode};
 
 use raw::routes;
 
@@ -38,7 +40,7 @@ async fn p404() -> Result<fs::NamedFile> {
 /// handler with path parameters like `/user/{name}/`
 async fn with_param(
     req: HttpRequest,
-    web::Path((name,)): web::Path<(String,)>,
+    web::Path((name, )): web::Path<(String, )>,
 ) -> HttpResponse {
     println!("{:?}", req);
 
@@ -54,6 +56,7 @@ async fn main() -> io::Result<()> {
 
     HttpServer::new(|| {
         App::new()
+            .data(Client::new())
             // cookie session middleware
             .wrap(CookieSession::signed(&[0; 32]).secure(false))
             // enable logger - always register actix-web Logger middleware last
@@ -61,6 +64,7 @@ async fn main() -> io::Result<()> {
             // register favicon
             .configure(routes::core::services)
             .configure(routes::stream::services)
+            .configure(routes::tridonic::sb::services)
             // register simple route, handle all methods
             .service(welcome)
             // with path parameters
@@ -100,8 +104,8 @@ async fn main() -> io::Result<()> {
                     ),
             )
     })
-    .bind("127.0.0.1:8080")?
+        .bind("127.0.0.1:8080")?
         .workers(4)
-    .run()
-    .await
+        .run()
+        .await
 }
