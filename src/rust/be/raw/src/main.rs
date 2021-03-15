@@ -1,4 +1,5 @@
 use std::{env, io};
+use std::time::Duration;
 
 use actix_files as fs;
 use actix_session::{CookieSession, Session};
@@ -6,7 +7,7 @@ use actix_web::{
     App, error, get, guard, HttpRequest, HttpResponse, HttpServer, middleware,
     Result, web,
 };
-use actix_web::client::Client;
+use actix_web::client::{ClientBuilder, Connector};
 use actix_web::http::{header, Method, StatusCode};
 
 use raw::routes;
@@ -53,10 +54,22 @@ async fn with_param(
 async fn main() -> io::Result<()> {
     env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
     env_logger::init();
+    let num_cpus = num_cpus::get();
+    println!("num_cpus={}", num_cpus);
 
     HttpServer::new(|| {
         App::new()
-            .data(Client::new())
+            .data(ClientBuilder::new()
+                .no_default_headers()
+                .disable_timeout()  // we will not receive a response
+                .connector(Connector::new()
+                    .timeout(Duration::from_secs(5))
+                    //.conn_keep_alive(Duration::from_secs(200))
+                    //.conn_lifetime(Duration::from_secs(3600))
+                    .finish())
+                .finish()
+            )
+            .data(routes::tridonic::hc::CustomClient::new())
             // cookie session middleware
             .wrap(CookieSession::signed(&[0; 32]).secure(false))
             // enable logger - always register actix-web Logger middleware last
@@ -64,7 +77,8 @@ async fn main() -> io::Result<()> {
             // register favicon
             .configure(routes::core::services)
             .configure(routes::stream::services)
-            .configure(routes::tridonic::sb::services)
+            .configure(routes::tridonic::ac::services)
+            .configure(routes::tridonic::ah::services)
             // register simple route, handle all methods
             .service(welcome)
             // with path parameters
@@ -105,7 +119,7 @@ async fn main() -> io::Result<()> {
             )
     })
         .bind("127.0.0.1:8080")?
-        .workers(32)
+        .workers(4)
         .run()
         .await
 }
