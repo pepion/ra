@@ -1,9 +1,0 @@
-version: '2'
-services:
-    meilisearch_service:
-        container_name: meilisearch_container
-        image: getmeili/meilisearch
-        ports:
-            - "7700:7700"
-#        volumes:
-#          - ./data.ms:/data.ms
