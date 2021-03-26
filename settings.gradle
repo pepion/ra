@@ -1,1 +1,8 @@
-rootProject.name = 'async-method'
+rootProject.name = 'ra'
+
+include 'spring-async'
+include 'spring-webflux'
+
+for (project in rootProject.children) {
+    project.projectDir = file("java/${project.name}")
+}
