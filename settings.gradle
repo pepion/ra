@@ -3,8 +3,8 @@ rootProject.name = 'ra'
 include 'spring-async'
 include 'spring-webflux'
 include 'webflux-sse'
-include 'reactive-mongo-crud'
-include 'reactive-mongo-tailable-async'
+//include 'reactive-mongo-crud'
+//include 'reactive-mongo-tailable-async'
 
 for (project in rootProject.children) {
     project.projectDir = file("java/${project.name}")
