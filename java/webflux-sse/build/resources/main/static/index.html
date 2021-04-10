@@ -17,7 +17,7 @@
 
 <body>
 <script>
-    var source = new EventSource("joke");
+    var source = new EventSource("joke/name");
     source.onmessage = function(event) {
       let data = JSON.parse(event.data);
       document.getElementById("qn").innerHTML = data.setup;
