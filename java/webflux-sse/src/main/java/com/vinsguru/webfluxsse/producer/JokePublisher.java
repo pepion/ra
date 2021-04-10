@@ -18,16 +18,22 @@ public class JokePublisher {
     @Autowired
     private Sinks.Many<Joke> sink;
 
-    @Scheduled(fixedRate = 3600000)
-    public void publish(){
+    @Scheduled(fixedRate = 3000) // 1h 3600_000
+    public void publish() {
         this.webClient
                 .get()
                 .retrieve()
                 .bodyToMono(Joke.class)
-                .subscribe(joke-> {
+                .subscribe(joke -> {
+                    Thread.getAllStackTraces().keySet()
+                            .stream()
+                            .map(t -> t.getName() + " daemon=" + t.isDaemon() + " alive=" + t.isAlive())
+                            .sorted()
+                            .forEach(System.out::println);
+                    System.out.println("----------> " + Thread.currentThread().getName());
                     LocalDateTime dateTime = LocalDateTime.now();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                    System.out.println(dateTime.format(formatter)+"::"+ joke.toString());
+                    System.out.println(dateTime.format(formatter) + "::" + joke.toString());
                     this.sink.tryEmitNext(joke);
                 });
     }

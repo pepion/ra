@@ -15,7 +15,7 @@ public class SSEController {
 
     @GetMapping(value = "/joke", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Joke> getJoke(){
-        return flux;
+        return flux.doOnNext(next-> System.out.println("xxxxxxxx--> " + Thread.currentThread().getName()));
     }
 
 }
