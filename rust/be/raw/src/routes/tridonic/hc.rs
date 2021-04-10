@@ -49,8 +49,8 @@ impl CustomClient {
 }
 
 pub async fn get_to_file(start: Instant, client: Data<CustomClient>, element: String, lang: String) -> Result<String> {
-    let url = format!("http://setbuilderapi.tridonic.com/get{}/{}", element, lang);
-    let path = format!("{}_{}.json", element, lang);
+    let url = format!("http://setbuilderapi-dev.tridonic.com/get{}/{}", element, lang);
+    let path = format!("{}_{}_dev.json", element, lang);
 
     let mut res = client.get(url).await?;
 
