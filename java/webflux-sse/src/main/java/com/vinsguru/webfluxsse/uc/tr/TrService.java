@@ -47,24 +47,16 @@ public class TrService {
     @Autowired
     private Sinks.Many<Joke> trSink;
 
-    public Flux<Joke> getDrivers() {
+    public Flux<Joke> importDrivers(final LocalDateTime start) {
         return Flux.fromIterable(LANGS)
                 .parallel()
                 .runOn(Schedulers.boundedElastic())
-                .doOnNext(this::start)
-                .flatMap(this::getDrivers)
+                .doOnNext(lang -> start(lang, start))
+                .flatMap(lang -> getDrivers(lang, start))
                 .sequential();
     }
 
-    private void start(String lang) {
-        LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        System.out.println(Thread.currentThread().getName()
-                + "::" + dateTime.format(formatter)
-                + "::START::" + lang);
-    }
-
-    public Joke save(DriversDTO drivers, String lang) {
+    public Joke save(DriversDTO drivers, String lang, final LocalDateTime start) {
         Thread.getAllStackTraces().keySet()
                 .stream()
                 .map(t -> t.getName() + " daemon=" + t.isDaemon() + " alive=" + t.isAlive())
@@ -78,18 +70,16 @@ public class TrService {
 
         //save
         drivers.setLang(lang);
+        end(lang, start);
 
         Joke joke = new Joke();
         joke.setSetup("drivers");
         joke.setPunchline(lang);
-        System.out.println(Thread.currentThread().getName()
-                + "::" + dateTime.format(formatter)
-                + "::" + joke.toString());
         //this.trSink.tryEmitNext(joke);
         return joke;
     }
 
-    public Mono<Joke> getDrivers(String lang) {
+    public Mono<Joke> getDrivers(String lang, final LocalDateTime start) {
         return this.client.get()
                 .uri("/getdrivers/{lang}", lang)
                 .httpRequest(httpRequest -> {
@@ -98,7 +88,25 @@ public class TrService {
                 })
                 .retrieve()
                 .bodyToMono(DriversDTO.class)
-                .map(drivers -> save(drivers, lang));
+                .map(drivers -> save(drivers, lang, start));
+    }
+
+    private void start(String lang, LocalDateTime start) {
+        log("START", lang, start);
+    }
+
+    private void end(String lang, LocalDateTime start) {
+        log("END", lang, start);
+    }
+
+    private void log(String msg, String lang, LocalDateTime start) {
+        LocalDateTime end = LocalDateTime.now();
+        Duration d = Duration.between(start, end);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        System.out.println(Thread.currentThread().getName()
+                + "::" + end.format(formatter)
+                + "::" + d.toString()
+                + "::" + msg + "::" + lang);
     }
 
 }

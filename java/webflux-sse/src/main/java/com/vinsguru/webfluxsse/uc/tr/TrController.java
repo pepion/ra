@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
+
 @RestController
 public class TrController {
     @Autowired
@@ -18,7 +20,8 @@ public class TrController {
 
     @GetMapping(value = "/tr/{name}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Joke> getTr(@PathVariable final String name){
-        return trService.getDrivers();
+        LocalDateTime start = LocalDateTime.now();
+        return trService.importDrivers(start);
         //return trFlux.doOnNext(next-> System.out.println("xxxxxxxx--> " + name + " --> " + Thread.currentThread().getName()));
     }
 }
