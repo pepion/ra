@@ -19,9 +19,10 @@ public class TrController {
     private Flux<Joke> trFlux;
 
     @GetMapping(value = "/tr/{name}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Joke> getTr(@PathVariable final String name){
+    public Flux<Joke> getTr(@PathVariable final String name) {
         LocalDateTime start = LocalDateTime.now();
-        return trService.importDrivers(start);
+        return trService.importDrivers(start)
+                .doOnComplete(() -> System.out.println("import completed::" + name));
         //return trFlux.doOnNext(next-> System.out.println("xxxxxxxx--> " + name + " --> " + Thread.currentThread().getName()));
     }
 }
