@@ -1,10 +1,22 @@
-com/vinsguru/webfluxsse/producer/Joke.java
- com.vinsguru.webfluxsse.producer.Joke
-com/vinsguru/webfluxsse/producer/JokePublisher.java
- com.vinsguru.webfluxsse.producer.JokePublisher
-com/vinsguru/webfluxsse/config/AppConfiguration.java
- com.vinsguru.webfluxsse.config.AppConfiguration
-com/vinsguru/webfluxsse/WebFluxSSEApplication.java
- com.vinsguru.webfluxsse.WebFluxSSEApplication
 com/vinsguru/webfluxsse/controller/SSEController.java
  com.vinsguru.webfluxsse.controller.SSEController
+com/vinsguru/webfluxsse/producer/JokePublisher.java
+ com.vinsguru.webfluxsse.producer.JokePublisher
+com/vinsguru/webfluxsse/uc/tr/model/Driver.java
+ com.vinsguru.webfluxsse.uc.tr.model.Driver
+com/vinsguru/webfluxsse/uc/tr/model/ModeValues.java
+ com.vinsguru.webfluxsse.uc.tr.model.ModeValues
+com/vinsguru/webfluxsse/config/AppConfiguration.java
+ com.vinsguru.webfluxsse.config.AppConfiguration
+com/vinsguru/webfluxsse/producer/Joke.java
+ com.vinsguru.webfluxsse.producer.Joke
+com/vinsguru/webfluxsse/WebFluxSSEApplication.java
+ com.vinsguru.webfluxsse.WebFluxSSEApplication
+com/vinsguru/webfluxsse/uc/tr/model/Link.java
+ com.vinsguru.webfluxsse.uc.tr.model.Link
+com/vinsguru/webfluxsse/uc/tr/model/DriversDTO.java
+ com.vinsguru.webfluxsse.uc.tr.model.DriversDTO
+com/vinsguru/webfluxsse/uc/tr/TrService.java
+ com.vinsguru.webfluxsse.uc.tr.TrService
+com/vinsguru/webfluxsse/uc/tr/TrController.java
+ com.vinsguru.webfluxsse.uc.tr.TrController

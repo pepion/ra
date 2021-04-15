@@ -29,4 +29,14 @@ public class AppConfiguration {
         return sink.asFlux();
     }
 
+    @Bean
+    public Sinks.Many<Joke> trSink(){
+        return Sinks.many().replay().latest();
+    }
+
+    @Bean
+    public Flux<Joke> trFlux(Sinks.Many<Joke> trSink){
+        return trSink.asFlux();
+    }
+
 }

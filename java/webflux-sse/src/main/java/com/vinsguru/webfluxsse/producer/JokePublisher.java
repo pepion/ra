@@ -18,7 +18,7 @@ public class JokePublisher {
     @Autowired
     private Sinks.Many<Joke> sink;
 
-    @Scheduled(fixedRate = 3000) // 1h 3600_000
+    @Scheduled(fixedRate = 3_600_000) // 1h 3_600_000
     public void publish() {
         this.webClient
                 .get()
